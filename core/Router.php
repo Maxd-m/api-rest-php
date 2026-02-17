@@ -11,12 +11,13 @@ class Router
         $this->basePath = rtrim($basePath, '/');
     }
 
-    public function addRoute($method, $path, $handler)
+    public function addRoute($method, $path, $handler, $middleware = null)
     {
         $this->routes[] = [
             'method' => strtoupper($method),
             'path' => "/api/{$this->version}" . $path,
-            'handler' => $handler
+            'handler' => $handler,
+            'middleware' => $middleware
         ];
     }
 
@@ -38,6 +39,11 @@ class Router
 
             if ($route['method'] === $method && preg_match($pattern, $uri, $matches)) {
                 array_shift($matches);
+                
+                // ⬇️ Ejecutar middleware si existe
+                if (is_callable($route['middleware'])) {
+                    call_user_func($route['middleware']);
+                }
                 return call_user_func_array($route['handler'], $matches);
             }
         }

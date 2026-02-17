@@ -46,6 +46,22 @@ public function create()
     return false;
 }
 
+public function findValidToken(string $token)
+{
+    $query = "SELECT user_id, expires_at 
+              FROM " . $this->table_name . "
+              WHERE token = :token
+                AND revoked = 0
+                AND expires_at > NOW()
+              LIMIT 1";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':token', $token);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 
     // public function create()
     // {
