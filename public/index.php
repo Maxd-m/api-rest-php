@@ -42,15 +42,5 @@ $router->addRoute('DELETE', '/products/{id}', [$productResource, 'destroy'], [$a
 
 $router->addRoute('POST', '/login', [$loginResource, 'login']);
 
-$publicRoutes = [
-    'POST:/login'
-];
-
-$currentRoute = $_SERVER['REQUEST_METHOD'] . ':' . $_SERVER['REQUEST_URI'];
-
-if (!in_array($currentRoute, $publicRoutes)) {
-    $authMiddleware->handle();
-}
-
 $router->dispatch();
 ?>
